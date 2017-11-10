@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -24,6 +25,10 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 
 import java.util.ArrayList;
+
+import hsj.com.appwithtabcarbuttom.R;
+
+
 /**
  * Special TabHost that allows the use of {@link Fragment} objects for its tab
  * content. When placing this in a view hierarchy, after inflating the hierarchy
@@ -46,6 +51,7 @@ import java.util.ArrayList;
  */
 public class FragmentTabHost extends TabHost implements
         TabHost.OnTabChangeListener {
+    private static final String TAG = "FragmentTabHost";
     private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
     private FrameLayout mRealTabContent;
     private Context mContext;
@@ -198,7 +204,6 @@ public class FragmentTabHost extends TabHost implements
         mContainerId = containerId;
         ensureContent();
         mRealTabContent.setId(containerId);
-
         // We must have an ID to be able to save/restore our state. If
         // the owner hasn't set one at this point, we will set it ourself.
         if (getId() == View.NO_ID) {
@@ -225,7 +230,7 @@ public class FragmentTabHost extends TabHost implements
     public void addTab(TabSpec tabSpec, Class<?> clss, Bundle args) {
         tabSpec.setContent(new DummyTabFactory(mContext));
         String tag = tabSpec.getTag();
-
+//        Log.d(TAG, "addTab: "+tag);
         TabInfo info = new TabInfo(tag, clss, args);
 
         if (mAttached) {
@@ -347,6 +352,7 @@ public class FragmentTabHost extends TabHost implements
                     newTab.fragment = Fragment.instantiate(mContext,
                             newTab.clss.getName(), newTab.args);
                     ft.add(mContainerId, newTab.fragment, newTab.tag);
+//                    Log.d(TAG, "doTabChanged: "+newTab.args +" "+newTab.tag);
                 } else {
 //					ft.attach(newTab.fragment);
                     ft.show(newTab.fragment);
@@ -357,4 +363,5 @@ public class FragmentTabHost extends TabHost implements
         }
         return ft;
     }
+
 }
